@@ -23,7 +23,7 @@ from random import choice, random, sample
 
 """
 Typically we need an Individual class and a Population class.
-An individual is a list of "genes". .
+An individual is a list of "genes".
 The Population is a list of individuals. 
 """
 
@@ -36,6 +36,7 @@ class Individual(list):
     """
 
     side = None
+
 
     def __init__(self):
         # DEAP stores fitness values in a Fitness class, which offers some basic operations. (See base.py.)
@@ -54,7 +55,7 @@ class Individual(list):
 
     def __str__(self):
         """
-        Convert this list to an grid for printing.
+        Convert this list to a grid for printing.
         """
         if not self.fitness.valid:
             self.set_fitness()
@@ -64,7 +65,7 @@ class Individual(list):
                             ' '.join([   # Put a ' ' between elements in a row
                                       f'{ar[row, col]}' for col in range(self.side)])
                                                         for row in range(self.side)] )
-        return st + f'    Sum of mismatches squared: {int(self.fitness.values[0])}'
+        return st + f'    Sum of mismatches: {int(self.fitness.values[0])}'
 
     def set_fitness(self):
         """
@@ -102,7 +103,7 @@ class Individual(list):
                     [np.sum(ar.diagonal()), np.sum(np.fliplr(ar).diagonal())])
             avg = round(sum(sums)/len(sums))
             # Fitness is defined as the sum of the squares of the differences from the average.
-            fit = int(sum([(n-avg)**2 for n in sums]))
+            fit = int(sum([abs(n-avg) for n in sums]))
 
             if fit < best_fit:
                 best_fit = fit
@@ -152,7 +153,11 @@ class Population(list):
     best_ind = None
     former_best_ind = None
 
-    def __init__(self, pop_size, max_gens, individual_generator, CXPB=0.7, MUTPB=0.5, verbose=True):
+
+    def __init__(self, pop_size, max_gens, individual_generator,
+                 mate=None, CXPB=0.7,
+                 mutate=None, MUTPB=0.5,
+                 select=tools.selTournament, verbose=True):
         Population.gen = 0
         # individual_generator is a function that when executed returns an individual.
         # See its use in generating the population at the end of __init__.
@@ -161,22 +166,23 @@ class Population(list):
         Population.max_gens = max_gens
         Population.CXPB = CXPB
         Population.MUTPB = MUTPB
+        Population.prev_best_fitness = float('inf')
         Population.verbose = verbose
 
         # Choose the genetic operators.
 
         # Select a crossover operator. We are using our own crossover operator.
-        self.toolbox.register("mate", Utils.cx_all_diff)
+        self.toolbox.register("mate", mate)
 
         # Select a mutation operator. We are using our own mutation operator.
-        self.toolbox.register("mutate", Utils.mut_swap_pairs)
+        self.toolbox.register("mutate", mutate)
 
         # operator for selecting individuals for breeding the next
         # generation: each individual of the current generation
         # is replaced by the 'fittest' (best) of <n> individuals
         # drawn randomly from the current generation.
         # I like tournament selection. Notice the difference tournament size makes.
-        self.toolbox.register("select", tools.selTournament, tournsize=7)
+        self.toolbox.register("select", select, tournsize=7)
 
         # Create a list of Individuals as the initial population.
         pop = [Population.individual_generator() for _ in range(pop_size)]
@@ -285,8 +291,8 @@ class Utils:
         """
         # Ensures that the two index positions are different.
         [pair_1, pair_2] = sample([1, 3, 5, 7], 2)
-        (ind[pair_1], ind[pair_1 + 1], ind[pair_2], ind[pair_2 + 1]) = \
-            (ind[pair_2], ind[pair_2+1], ind[pair_1], ind[pair_1+1])
+        (ind[pair_1], ind[pair_1+1]),    (ind[pair_2], ind[pair_2+1]) = \
+        (ind[pair_2], ind[pair_2+1]),    (ind[pair_1], ind[pair_1+1])
 
     @staticmethod
     def print_best(best_ind):
@@ -306,8 +312,8 @@ class Utils:
             # Again, ind.fitness.values is a tuple. We want the first value.
             fits = [ind.fitness.values[0] for ind in pop]
             mean = sum(fits) / pop.pop_size
-            sum2 = sum(x * x for x in fits)
-            std = abs(sum2 / pop.pop_size - mean ** 2) ** 0.5
+            sum_sq = sum(x * x for x in fits)
+            std = abs(sum_sq / pop.pop_size - mean ** 2) ** 0.5
             print(f"   Min: {int(min(fits))}; Mean {round(mean, 2)}; Max {int(max(fits))}; Std {round(std, 2)}")
             Utils.print_best(Population.best_ind)
 
@@ -328,20 +334,21 @@ class Utils:
     def to_ind(lst):
         ind = Individual()
         ind[:] = lst
+        ind.set_fitness()
         return ind
-    
 
 
 def main(verbose=True):
-    # seed(64)
-    # create an initial population.
+
     Individual.side = 3
+
+    # create an initial population.
     pop = Population(pop_size=100, max_gens=50,
                      individual_generator=Individual,
+                     mate=Utils.cx_all_diff, CXPB=0.7,
+                     mutate=Utils.mut_swap_pairs, MUTPB=0.5,
                      verbose=verbose)
     Utils.print_stats(pop)
-    if verbose:
-        print("\nStart evolution", end='')
     prefix = 'Unsuccessful'
     for _ in range(Population.max_gens):
         best_fit = Population.best_ind.fitness.values[0]
