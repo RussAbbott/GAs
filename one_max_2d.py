@@ -64,7 +64,7 @@ class Individual(list):
         if not self.fitness.valid:
             self.set_fitness()
         # ar = self.to_np_array()
-        ar = Utils.to_array(self, Individual.rows, Individual.cols)
+        ar = Utils.list_to_array(self, Individual.rows, Individual.cols)
         st = '\n    ' +  \
              '\n    '.join([             # Put a '\n' between rows
                             ' '.join([   # Put a ' ' between elements in a row
@@ -82,7 +82,7 @@ class Individual(list):
 
         Again, recall that the fitness is a tuple.
         """
-        sums_of_cols = np.sum(Utils.to_array(self, Individual.rows, Individual.cols))
+        sums_of_cols = np.sum(Utils.list_to_array(self, Individual.rows, Individual.cols))
         fit = np.sum(sums_of_cols)
         self.fitness.values = (fit, )
 
@@ -107,7 +107,7 @@ def main(verbose=True):
             break
         pop.generate_next_generation()
 
-    # We consider the evoluation successful if max_fit indicates that best_ind is all 1's,
+    # We consider the evolution successful if max_fit indicates that best_ind is all 1's,
     # prefix = "" if best_fit == best_ind.rows*best_ind.cols else "un"
     print(f"\n-- After {pop.gen} generations, end of {prefix} evolution --")
 

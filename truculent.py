@@ -129,9 +129,7 @@ def main(verbose=True):
     # Evaluate the fitness of all population elements and return the best.
     pop.eval_all()
     if verbose:
-        Utils.print_stats(pop)  #, best_ind)
-        # Utils.print_best(best_ind, 'initial ')
-        # print("\nStart evolution")
+        Utils.print_stats(pop)
 
     # We have succeeded when the fitness shows that we can place 7 tokens.
     # Generate new populations until then or until we reach max_gens.

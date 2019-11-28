@@ -60,7 +60,7 @@ class Individual(list):
         """
         if not self.fitness.valid:
             self.set_fitness()
-        ar = Utils.to_array(self.to_ms_seq(list(self)), Individual.side, Individual.side)
+        ar = Utils.list_to_array(self.to_ms_seq(list(self)), Individual.side, Individual.side)
         st = '\n    ' +  \
              '\n    '.join([             # Put a '\n' between rows
                             ' '.join([   # Put a ' ' between elements in a row
@@ -97,13 +97,13 @@ class Individual(list):
             # each other.
             sq = self.to_ms_seq(rotation)
 
-            ar = Utils.to_array(sq, Individual.side, Individual.side)
+            ar = Utils.list_to_array(sq, Individual.side, Individual.side)
             #       col sums, row sums, [major diag, minor diag]
             sums = (list(np.sum(ar, axis=0).tolist()) +
                     list(np.sum(ar, axis=1).tolist()) +
                     [np.sum(ar.diagonal()), np.sum(np.fliplr(ar).diagonal())])
             avg = round(sum(sums)/len(sums))
-            # Fitness is defined as the sum of the squares of the differences from the average.
+            # Fitness is defined as the sum of the differences from the average.
             fit = int(sum([abs(n-avg) for n in sums]))
 
             if fit < best_fit:

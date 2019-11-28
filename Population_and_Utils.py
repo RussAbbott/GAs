@@ -192,6 +192,22 @@ class Utils:
         child = ind_1r[: indx] + [item for item in ind_2r if item not in ind_1r[: indx]]
         return child
 
+    @staticmethod
+    def list_to_array(lst, rows, cols):
+        """
+        Creates a side x cols 2-dimensional numpy array.
+        Create a 1-D numpy array and then turn it into a side x cols array.
+        """
+        ar = np.reshape(np.array(lst), (rows, cols))
+        return ar
+
+    @staticmethod
+    def list_to_ind(Ind_class, lst):
+        ind_shell = Ind_class()
+        ind_shell[:] = lst
+        ind_shell.set_fitness()
+        return ind_shell
+
     # noinspection PyUnusedLocal
     @staticmethod
     # The second parameter makes this consistent with the other crossover operations
@@ -219,9 +235,9 @@ class Utils:
     @staticmethod
     def print_best(best_ind):
         Ind_class = best_ind.__class__
-        cx_segment = f'{Utils.to_ind(Ind_class, best_ind.parent_1)}\n\n + (crossed with) \n' \
-                     f'{Utils.to_ind(Ind_class, best_ind.parent_2)}\n\n =>\n ' if best_ind.parent_1 else ''
-        mutation_segment = f'{Utils.to_ind(Ind_class, best_ind.pre_mutation)}\n\n => (mutated to) \n' \
+        cx_segment = f'{Utils.list_to_ind(Ind_class, best_ind.parent_1)}\n\n + (crossed with) \n' \
+                     f'{Utils.list_to_ind(Ind_class, best_ind.parent_2)}\n\n =>\n ' if best_ind.parent_1 else ''
+        mutation_segment = f'{Utils.list_to_ind(Ind_class, best_ind.pre_mutation)}\n\n => (mutated to) \n' \
                                                                     if best_ind.pre_mutation else ''
         print(cx_segment + mutation_segment + str(best_ind))
 
@@ -240,19 +256,3 @@ class Utils:
     @staticmethod
     def rotate_by(lst, amt):
         return lst[amt:] + lst[:amt]
-
-    @staticmethod
-    def to_array(lst, rows, cols):
-        """
-        Creates a side x cols 2-dimensional numpy array.
-        Create a 1-D numpy array and then turn it into a side x cols array.
-        """
-        ar = np.reshape(np.array(lst), (rows, cols))
-        return ar
-    
-    @staticmethod
-    def to_ind(Ind_class, lst):
-        ind_shell = Ind_class()
-        ind_shell[:] = lst
-        ind_shell.set_fitness()
-        return ind_shell
