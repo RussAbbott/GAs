@@ -87,6 +87,9 @@ class Population(list):
         # Create a list of Individuals as the initial population.
         pop = [Population.individual_generator() for _ in range(pop_size)]
         super().__init__(pop)
+        self.eval_all( )
+        if verbose:
+            Utils.print_stats(self)
 
     def eval_all(self):
         for ind in self:
@@ -164,6 +167,16 @@ class Population(list):
             # A smaller fitness value the better. Multiplied by -1, a larger (but negative) fitness value is better.
             (not self.former_best_ind or self.best_ind.fitness.wvalues[0] > self.former_best_ind.fitness.wvalues[0])):
             Utils.print_stats(self)
+
+    def run_evolution(self):
+        prefix = 'Unsuccessful'
+        for _ in range(Population.max_gens):
+            best_fit = self.best_ind.fitness.values[0]
+            if best_fit == 0:
+                prefix = 'Successful'
+                break
+            self.generate_next_generation( )
+        print(f"-- {prefix} evolution. {Population.gen} generations. --")
 
 
 class Utils:

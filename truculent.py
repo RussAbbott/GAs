@@ -126,22 +126,8 @@ def main(verbose=True):
                      mate=Utils.cx_all_diff, CXPB=0.5,
                      mutate=Utils.mut_move_elt, MUTPB=0.2,
                      verbose=verbose)
-    # Evaluate the fitness of all population elements and return the best.
-    pop.eval_all()
-    if verbose:
-        Utils.print_stats(pop)
 
-    # We have succeeded when the fitness shows that we can place 7 tokens.
-    # Generate new populations until then or until we reach max_gens.
-    success = 'unsuccessful'
-    for _ in range(Population.max_gens):
-        best_fit = pop.best_ind.fitness.values[0]
-        if best_fit == 7:
-            success = 'successful'
-            break
-        pop.generate_next_generation()
-
-    print(f"\n-- After {Population.gen} generations, end of {success} evolution --")
+    pop.run_evolution()
 
 
 if __name__ == "__main__":

@@ -136,16 +136,8 @@ def main(verbose=True):
                      mate=Utils.cx_all_diff, CXPB=0.7,
                      mutate=Utils.mut_swap_pairs, MUTPB=0.5,
                      verbose=verbose)
-    pop.eval_all()
-    Utils.print_stats(pop)
-    prefix = 'Unsuccessful'
-    for _ in range(Population.max_gens):
-        best_fit = pop.best_ind.fitness.values[0]
-        if best_fit == 0:
-            prefix = 'Successful'
-            break
-        pop.generate_next_generation()
-    print(f"-- {prefix} evolution. {Population.gen} generations. --")
+
+    pop.run_evolution()
 
 
 if __name__ == "__main__":

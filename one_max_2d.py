@@ -96,20 +96,7 @@ def main(verbose=True):
     pop = Population(pop_size=10, max_gens=200,
                      individual_generator=Individual,
                      verbose=verbose)
-    pop.eval_all()
-    if verbose:
-        Utils.print_stats(pop)
-    prefix = 'unsuccessful'
-    for _ in range(Population.max_gens):
-        best_fit = pop.best_ind.fitness.values[0]
-        if best_fit == Individual.rows*Individual.cols:
-            prefix = 'successful'
-            break
-        pop.generate_next_generation()
-
-    # We consider the evolution successful if max_fit indicates that best_ind is all 1's,
-    # prefix = "" if best_fit == best_ind.rows*best_ind.cols else "un"
-    print(f"\n-- After {pop.gen} generations, end of {prefix} evolution --")
+    pop.run_evolution()
 
 
 if __name__ == "__main__":
