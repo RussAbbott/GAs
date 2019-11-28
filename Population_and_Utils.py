@@ -227,10 +227,6 @@ class Utils:
 
     @staticmethod
     def print_stats(pop):
-        # Evaluate the individuals (in the new generation) with invalid fitnesses.
-        # pop.eval_all()
-        #
-        # if pop.verbose and pop.best_ind.fitness[0]*pop.best_ind.weights[0] > pop.former_best_ind:
         print(f"\n-- Generation {pop.gen} --")
         # Gather all the fitnesses in one list and print the stats.
         # Again, ind.fitness.values is a tuple. We want the first value.
