@@ -137,7 +137,7 @@ def main(verbose=True):
                      mutate=Utils.mut_swap_pairs, MUTPB=0.5,
                      verbose=verbose)
 
-    pop.run_evolution()
+    pop.run_evolution(0)
 
 
 if __name__ == "__main__":

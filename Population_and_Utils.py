@@ -168,11 +168,11 @@ class Population(list):
             (not self.former_best_ind or self.best_ind.fitness.wvalues[0] > self.former_best_ind.fitness.wvalues[0])):
             Utils.print_stats(self)
 
-    def run_evolution(self):
+    def run_evolution(self, fitness_target, acceptable_discrepancy=0):
         prefix = 'Unsuccessful'
         for _ in range(Population.max_gens):
             best_fit = self.best_ind.fitness.values[0]
-            if best_fit == 0:
+            if abs(best_fit - fitness_target) <= acceptable_discrepancy:
                 prefix = 'Successful'
                 break
             self.generate_next_generation( )

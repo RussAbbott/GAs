@@ -127,7 +127,7 @@ def main(verbose=True):
                      mutate=Utils.mut_move_elt, MUTPB=0.2,
                      verbose=verbose)
 
-    pop.run_evolution()
+    pop.run_evolution(7)
 
 
 if __name__ == "__main__":
