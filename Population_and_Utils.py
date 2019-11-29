@@ -125,13 +125,13 @@ class Population(list):
         # Pair the offspring off even-odd.
         for (child_1, child_2) in zip(offspring[::2], offspring[1::2]):
             # cross two individuals with probability CXPB
-            # Set the parents to None so that we can tell whether crossover occurred
-            child_1.parent_1 = child_1.parent_2 = None
-            child_2.parent_1 = child_2.parent_2 = None
-            # Keep track of what the elements were before crossover.
-            c_1 = list(child_1)
-            c_2 = list(child_2)
             if random( ) < self.CXPB:
+                # Set the parents to None so that we can tell whether crossover occurred
+                child_1.parent_1 = child_1.parent_2 = None
+                child_2.parent_1 = child_2.parent_2 = None
+                # Keep track of what the elements were before crossover.
+                c_1 = list(child_1)
+                c_2 = list(child_2)
                 # Set the parents to c_1 and c_2 so that we can tell that crossover occurred
                 child_1.parent_1 = child_2.parent_1 = c_1
                 child_1.parent_2 = child_2.parent_2 = c_2
