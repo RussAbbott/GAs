@@ -46,6 +46,8 @@ class Population(list):
     CXPB = None
     MUTPB = None
 
+    select_pct_random = None
+
     verbose = None
 
     toolbox = base.Toolbox( )
@@ -53,7 +55,9 @@ class Population(list):
     def __init__(self, pop_size, max_gens, individual_generator,
                  mate=tools.cxUniform, CXPB=0.7,
                  mutate=tools.mutFlipBit, MUTPB=0.5,
-                 select=tools.selTournament, verbose=True):
+                 select=tools.selTournament,
+                 select_pct_random=0.5,
+                 verbose=True):
         Population.gen = 0
         # individual_generator is a function that when executed returns an individual.
         # See its use in generating the population at the end of __init__.
@@ -62,6 +66,7 @@ class Population(list):
         Population.max_gens = max_gens
         Population.CXPB = CXPB
         Population.MUTPB = MUTPB
+        Population.select_pct_random = select_pct_random
         Population.verbose = verbose
 
         self.best_ind = None
@@ -110,8 +115,9 @@ class Population(list):
         # But no guarantee that the best is kept.
         # In addition, fill the remainder of the population with new random elements.
         # At the end we add the best of the current population.
-        offspring = self.toolbox.select(self, self.pop_size//2) + \
-                    [Population.individual_generator() for _ in range(self.pop_size//2)]
+        half_pop_size = round(self.pop_size * Population.select_pct_random)
+        offspring = self.toolbox.select(self, half_pop_size) + \
+                    [Population.individual_generator() for _ in range(self.pop_size - half_pop_size)]
 
         # Now make each element a clone of itself.
         # We do that because the genetic operators modify the elements in place.

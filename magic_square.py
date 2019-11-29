@@ -131,7 +131,7 @@ def main(verbose=True):
     Individual.side = 3
 
     # create an initial population.
-    pop = Population(pop_size=100, max_gens=50,
+    pop = Population(pop_size=50, max_gens=25,
                      individual_generator=Individual,
                      mate=Utils.cx_all_diff, CXPB=0.7,
                      mutate=Utils.mut_swap_pairs, MUTPB=0.5,

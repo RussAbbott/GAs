@@ -96,6 +96,7 @@ def main(verbose=True):
     pop = Population(pop_size=10, max_gens=200,
                      individual_generator=Individual,
                      verbose=verbose)
+
     pop.run_evolution(Individual.rows*Individual.cols)
 
 
