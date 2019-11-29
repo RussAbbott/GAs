@@ -121,7 +121,7 @@ def main(verbose=True):
     # Create an initial population. We are using a *tiny* population so that
     # the answer doesn't appear immediately. Even so the initial population
     # often contains a solution--no evolution required.
-    pop = Population(pop_size=1, max_gens=50,
+    pop = Population(pop_size=3, max_gens=50,
                      individual_generator=Individual,
                      mate=Utils.cx_all_diff, CXPB=0.5,
                      mutate=Utils.mut_move_elt, MUTPB=0.2,
