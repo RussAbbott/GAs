@@ -63,13 +63,13 @@ class Individual(list):
         """
         if not self.fitness.valid:
             self.set_fitness()
-        # ar = self.to_np_array()
         ar = Utils.list_to_array(self, Individual.rows, Individual.cols)
         st = '\n    ' +  \
              '\n    '.join([             # Put a '\n' between rows
                             ' '.join([   # Put a ' ' between elements in a row
                                       f'{ar[row, col]}' for col in range(self.cols)])
                                                         for row in range(self.rows)] )
+        # Add fitness at the end.
         return st + f'         Fitness: {self.fitness.values[0]}'
 
     def set_fitness(self):
@@ -82,7 +82,8 @@ class Individual(list):
 
         Again, recall that the fitness is a tuple.
         """
-        sums_of_cols = np.sum(Utils.list_to_array(self, Individual.rows, Individual.cols))
+        ar = Utils.list_to_array(self, Individual.rows, Individual.cols)
+        sums_of_cols = np.sum(ar)
         fit = np.sum(sums_of_cols)
         self.fitness.values = (fit, )
 
