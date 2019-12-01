@@ -115,9 +115,10 @@ class Population(list):
         # But no guarantee that the best is kept.
         # In addition, fill the remainder of the population with new random elements.
         # At the end we add the best of the current population.
-        half_pop_size = round(self.pop_size * Population.select_pct_random)
-        offspring = self.toolbox.select(self, half_pop_size) + \
-                    [Population.individual_generator() for _ in range(self.pop_size - half_pop_size)]
+        nbr_random = round(self.pop_size * Population.select_pct_random)
+        randoms = [Population.individual_generator() for _ in range(nbr_random)]
+        best = self.toolbox.select(self, self.pop_size - nbr_random)
+        offspring = best + randoms
 
         # Now make each element a clone of itself.
         # We do that because the genetic operators modify the elements in place.
@@ -163,11 +164,12 @@ class Population(list):
 
         # The new generation replaces the current one.
         self[:] = offspring
-        # Elitism. Add the best of the current generation to the new generation.
-        self[0] = self.best_ind
 
         # noinspection PyTypeChecker
         self.eval_all()
+        # Elitism. Add the best of the current generation to the new generation.
+        self[0] = self.best_ind
+
         if (self.verbose and
             # wvalues are the fitness values times the weights. MagicSquare has a negative weight.
             # A smaller fitness value the better. Multiplied by -1, a larger (but negative) fitness value is better.
